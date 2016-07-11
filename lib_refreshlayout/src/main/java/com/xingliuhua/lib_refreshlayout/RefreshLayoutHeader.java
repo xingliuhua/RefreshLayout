@@ -18,15 +18,24 @@ public class RefreshLayoutHeader extends FrameLayout implements IRefreshHeder {
 
     public RefreshLayoutHeader(Context context) {
         super(context);
-        init();
+        init(-1);
+    }
 
+    public RefreshLayoutHeader(Context context, int imageResId) {
+        super(context);
+        init(imageResId);
     }
 
     private ImageView mIv;
 
-    private void init() {
+    private void init(int imageResId) {
         mIv = new ImageView(getContext());
-        mIv.setImageResource(R.drawable.refreshing);
+        if (imageResId == -1) {
+            mIv.setImageResource(R.drawable.refreshing);
+        }else{
+            mIv.setImageResource(imageResId);
+        }
+        mIv.setPadding(0,10,0,10);
         mIv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, (int) mIvHeight);
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
@@ -34,7 +43,6 @@ public class RefreshLayoutHeader extends FrameLayout implements IRefreshHeder {
         mAnimationDrawable = (AnimationDrawable) mIv.getDrawable();
         mAnimationDrawable.stop();
     }
-
 
     @Override
     public void onStartRefreshing() {

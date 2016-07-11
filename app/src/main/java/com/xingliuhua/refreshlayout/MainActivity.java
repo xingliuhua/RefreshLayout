@@ -23,5 +23,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, RefreshLinearLayoutActivity.class));
             }
         });
+        findViewById(R.id.btn_containListViewCustomHeader).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, RefreshListViewCustomHeaderActivity.class));
+            }
+        });
     }
 }

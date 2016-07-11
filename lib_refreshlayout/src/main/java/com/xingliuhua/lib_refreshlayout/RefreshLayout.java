@@ -1,6 +1,7 @@
 package com.xingliuhua.lib_refreshlayout;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
@@ -32,18 +33,14 @@ public class RefreshLayout extends FrameLayout {
     private boolean needLoadMore = true;
     private boolean isLoadMoreing;
     private final int ANIM_DURATION = 300;
-
-    public RefreshLayout(Context context) {
-        super(context);
-        init(context, null, 0);
-    }
+    private int imageResId;
 
     public RefreshLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context, attrs, 0);
+        init(context, attrs);
     }
 
-    private void init(Context context, AttributeSet attrs, int defstyleAttr) {
+    private void init(Context context, AttributeSet attrs) {
         if (isInEditMode()) {
             return;
         }
@@ -52,6 +49,9 @@ public class RefreshLayout extends FrameLayout {
             throw new RuntimeException("can only have one child widget");
         }
         zhuni = (RELEASE_MAX_HEIGHT * RELEASE_MAX_HEIGHT) / 600f;
+        TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.RefreshLayout);
+        imageResId = typedArray.getResourceId(R.styleable.RefreshLayout_headerAnimDrawbleList, -1);
+        typedArray.recycle();
     }
 
     @Override
@@ -65,7 +65,11 @@ public class RefreshLayout extends FrameLayout {
         if (mChildView == null) {
             return;
         }
-        mMyRefreshLayoutHeader = new RefreshLayoutHeader(context);
+        if (imageResId == -1) {
+            mMyRefreshLayoutHeader = new RefreshLayoutHeader(context);
+        }else{
+            mMyRefreshLayoutHeader = new RefreshLayoutHeader(context, imageResId);
+        }
         LayoutParams headerLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         headerLayoutParams.gravity = Gravity.TOP;
         mMyRefreshLayoutHeader.setVisibility(View.GONE);

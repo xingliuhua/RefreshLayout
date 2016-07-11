@@ -21,6 +21,9 @@
         <activity
             android:name=".RefreshListViewActivity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".RefreshListViewCustomHeaderActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
