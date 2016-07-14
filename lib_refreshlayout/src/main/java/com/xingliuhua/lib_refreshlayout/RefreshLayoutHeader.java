@@ -16,10 +16,6 @@ public class RefreshLayoutHeader extends FrameLayout implements IRefreshHeder {
     private AnimationDrawable mAnimationDrawable;
     private float mIvHeight = 100f;
 
-    public RefreshLayoutHeader(Context context) {
-        super(context);
-        init(-1);
-    }
 
     public RefreshLayoutHeader(Context context, int imageResId) {
         super(context);

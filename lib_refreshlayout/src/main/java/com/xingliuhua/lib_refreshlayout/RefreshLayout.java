@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.support.v4.view.ViewCompat;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -26,14 +27,16 @@ public class RefreshLayout extends FrameLayout {
     private boolean isRefreshing;
     private float mTouchY;
     private float mCurrentY;
-    private float zhuni;
+    private float mDamp;
     private final int RELEASE_MAX_HEIGHT = 150;
     private final int HEADER_HEIGHT = 100;
     private final int FOOTER_HEIGHT = 100;
     private boolean needLoadMore = true;
     private boolean isLoadMoreing;
     private final int ANIM_DURATION = 300;
-    private int imageResId;
+    private int mHeaderImageAnimListResId;
+    private String mFooterPullText;
+    private String mFooterLoadmoreingText;
 
     public RefreshLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -48,9 +51,11 @@ public class RefreshLayout extends FrameLayout {
         if (getChildCount() > 1) {
             throw new RuntimeException("can only have one child widget");
         }
-        zhuni = (RELEASE_MAX_HEIGHT * RELEASE_MAX_HEIGHT) / 600f;
+        mDamp = (RELEASE_MAX_HEIGHT * RELEASE_MAX_HEIGHT) / 600f;
         TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.RefreshLayout);
-        imageResId = typedArray.getResourceId(R.styleable.RefreshLayout_headerAnimDrawbleList, -1);
+        mHeaderImageAnimListResId = typedArray.getResourceId(R.styleable.RefreshLayout_headerAnimDrawbleList, -1);
+        mFooterPullText = typedArray.getString(R.styleable.RefreshLayout_footerPullText);
+        mFooterLoadmoreingText = typedArray.getString(R.styleable.RefreshLayout_footerLoadMoreingText);
         typedArray.recycle();
     }
 
@@ -65,17 +70,13 @@ public class RefreshLayout extends FrameLayout {
         if (mChildView == null) {
             return;
         }
-        if (imageResId == -1) {
-            mMyRefreshLayoutHeader = new RefreshLayoutHeader(context);
-        }else{
-            mMyRefreshLayoutHeader = new RefreshLayoutHeader(context, imageResId);
-        }
+        mMyRefreshLayoutHeader = new RefreshLayoutHeader(context, mHeaderImageAnimListResId);
         LayoutParams headerLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         headerLayoutParams.gravity = Gravity.TOP;
         mMyRefreshLayoutHeader.setVisibility(View.GONE);
         addView(mMyRefreshLayoutHeader, 0, headerLayoutParams);
 
-        mMyRefreshLayoutFooter = new RefreshLayoutFooter(context);
+        mMyRefreshLayoutFooter = new RefreshLayoutFooter(context, mFooterPullText, mFooterLoadmoreingText);
         LayoutParams footerLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         footerLayoutParams.gravity = Gravity.BOTTOM;
         mMyRefreshLayoutFooter.setVisibility(View.GONE);
@@ -122,7 +123,7 @@ public class RefreshLayout extends FrameLayout {
                 mCurrentY = e.getY();
                 float distance = mCurrentY - mTouchY;
                 // 阻尼效果
-                double dy = Math.sqrt(zhuni * Math.abs(distance));
+                double dy = Math.sqrt(mDamp * Math.abs(distance));
 //                LogUtil.e("distance:"+distance);
                 if (mChildView != null) {
                     if (distance > 0 && !canChildScrollUp()) {
@@ -357,6 +358,34 @@ public class RefreshLayout extends FrameLayout {
 
     }
 
+    /**
+     * @param loadMoreing
+     * @param notNeedMoreMessage If there is no more data, you can tell the user some tips
+     */
+    public void setLoadMoreing(boolean loadMoreing, String notNeedMoreMessage) {
+        if (isLoadMoreing == loadMoreing) {
+            return;
+        }
+        if (loadMoreing) {
+            this.post(new Runnable() {
+                @Override
+                public void run() {
+                    startLoadMoreing();
+                }
+            });
+        } else if (!TextUtils.isEmpty(notNeedMoreMessage)) {
+            mMyRefreshLayoutFooter.setNeedLoadMoreMessage(notNeedMoreMessage);
+            isLoadMoreing = false;
+            needLoadMore=false;
+        } else {
+            this.post(new Runnable() {
+                @Override
+                public void run() {
+                    finishLoadMoreing();
+                }
+            });
+        }
+    }
     public void setLoadMoreing(boolean loadMoreing) {
         if (isLoadMoreing == loadMoreing) {
             return;
@@ -368,7 +397,7 @@ public class RefreshLayout extends FrameLayout {
                     startLoadMoreing();
                 }
             });
-        } else {
+        } else{
             this.post(new Runnable() {
                 @Override
                 public void run() {

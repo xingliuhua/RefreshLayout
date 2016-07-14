@@ -2,5 +2,7 @@
 <resources>
     <declare-styleable name="RefreshLayout">
         <attr name="headerAnimDrawbleList" format="reference"></attr>
+        <attr name="footerPullText" format="string"></attr>
+        <attr name="footerLoadMoreingText" format="string"></attr>
     </declare-styleable>
 </resources>
