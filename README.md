@@ -11,7 +11,7 @@ Add the library as dependency to your `build.gradle` file.
 ```java
 dependencies {
 	//other dependencies...
-	compile 'com.xingliuhua:lib_refreshlayout:1.0.3'
+	compile 'com.xingliuhua:lib_refreshlayout:1.0.4'
 }
 ```
 ###Include the View into your Layout
