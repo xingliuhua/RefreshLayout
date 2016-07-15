@@ -21,10 +21,6 @@ public class RefreshLayoutFooter extends FrameLayout implements IRefreshFooter {
         this.mFooterLoadmoreingText = loadmoreingText;
         init();
     }
-    public void setNeedLoadMoreMessage(String message){
-        mTvLoadMore.setText(message);
-    }
-
     private void init() {
         mTvLoadMore = new TextView(getContext());
         if (!TextUtils.isEmpty(mFooterPullText)) {

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.support.v4.view.ViewCompat;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -358,34 +357,7 @@ public class RefreshLayout extends FrameLayout {
 
     }
 
-    /**
-     * @param loadMoreing
-     * @param notNeedMoreMessage If there is no more data, you can tell the user some tips
-     */
-    public void setLoadMoreing(boolean loadMoreing, String notNeedMoreMessage) {
-        if (isLoadMoreing == loadMoreing) {
-            return;
-        }
-        if (loadMoreing) {
-            this.post(new Runnable() {
-                @Override
-                public void run() {
-                    startLoadMoreing();
-                }
-            });
-        } else if (!TextUtils.isEmpty(notNeedMoreMessage)) {
-            mMyRefreshLayoutFooter.setNeedLoadMoreMessage(notNeedMoreMessage);
-            isLoadMoreing = false;
-            needLoadMore=false;
-        } else {
-            this.post(new Runnable() {
-                @Override
-                public void run() {
-                    finishLoadMoreing();
-                }
-            });
-        }
-    }
+
     public void setLoadMoreing(boolean loadMoreing) {
         if (isLoadMoreing == loadMoreing) {
             return;

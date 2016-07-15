@@ -58,7 +58,7 @@ public class RefreshListViewCustomHeaderActivity extends AppCompatActivity {
                         } else {
                             refreshLayout.setNeedLoadMore(false);
                         }
-                        refreshLayout.setLoadMoreing(false,"已显示所有数据");
+                        refreshLayout.setLoadMoreing(false);
                     }
                 }, 2000);
             }
