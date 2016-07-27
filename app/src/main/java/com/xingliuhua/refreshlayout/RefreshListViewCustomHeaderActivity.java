@@ -63,6 +63,5 @@ public class RefreshListViewCustomHeaderActivity extends AppCompatActivity {
                 }, 2000);
             }
         });
-        refreshLayout.setRefreshing(true);
     }
 }

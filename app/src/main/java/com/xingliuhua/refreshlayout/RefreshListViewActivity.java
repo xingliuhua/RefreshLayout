@@ -63,6 +63,5 @@ public class RefreshListViewActivity extends AppCompatActivity {
                 }, 2000);
             }
         });
-        refreshLayout.setRefreshing(true);
     }
 }

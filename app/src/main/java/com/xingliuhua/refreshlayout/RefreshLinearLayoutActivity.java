@@ -38,6 +38,5 @@ public class RefreshLinearLayoutActivity extends AppCompatActivity {
             }
         });
         refreshLayout.setNeedLoadMore(false);
-        refreshLayout.setRefreshing(true);
     }
 }
