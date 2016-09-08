@@ -64,5 +64,4 @@ Add the View to your existing layout file.
  refreshLayout.setLoadMoreing(false); //just start or stop loadMore
  refreshLayout.setLoadMoreing(false,"已显示所有数据"); // start loadmore,or stop loadmore and hava a textview message(ex:hava no data)
 ```
-##issues
-It can't support recycleview
+
