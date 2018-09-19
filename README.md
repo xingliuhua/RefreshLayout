@@ -1,10 +1,10 @@
 # RefreshLayout
 This one pull to refresh library, support for load more, it can contain a LinearLayout or ListView and other layout
-##Screenshot
+## Screenshot
 ![](https://github.com/xingliuhua/RefreshLayout/blob/master/listview.gif)![](https://github.com/xingliuhua/RefreshLayout/blob/master/listview2.gif)
-##Getting Started
+## Getting Started
 
-###Add the library as dependency
+### Add the library as dependency
 
 Add the library as dependency to your `build.gradle` file.
 
@@ -14,7 +14,7 @@ dependencies {
 	compile 'com.xingliuhua:lib_refreshlayout:1.0.4'
 }
 ```
-###Include the View into your Layout
+### Include the View into your Layout
 
 Add the View to your existing layout file.
 ```xml
@@ -33,7 +33,7 @@ Add the View to your existing layout file.
             android:layout_height="match_parent"/>
     </com.xingliuhua.lib_refreshlayout.RefreshLayout>
 ```
-###Customize the headerAnimList
+### Customize the headerAnimList
 ```xml
 <animation-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
@@ -47,7 +47,7 @@ Add the View to your existing layout file.
         android:duration="200"></item>
 </animation-list>
 ```
-###use in code
+### use in code
 ```java
  refreshLayout.setOnRefreshListener(new RefreshLayout.OnRefreshListener() {
             @Override
