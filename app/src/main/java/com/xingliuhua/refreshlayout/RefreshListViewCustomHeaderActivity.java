@@ -29,10 +29,13 @@ public class RefreshListViewCustomHeaderActivity extends AppCompatActivity {
         for (int i = 0; i < 10; i++) {
             mStringList.add("this is item" + itemIndex++);
         }
+
         ListView listView = (ListView) findViewById(R.id.listView);
         mRefreshLayoutListViewAdapter = new RefreshLayoutListViewAdapter(mStringList, this);
         listView.setAdapter(mRefreshLayoutListViewAdapter);
         final RefreshLayout refreshLayout = (RefreshLayout) findViewById(R.id.refreshLayout);
+        refreshLayout.setRefreshHeder(new MyRefreshLayoutHeader(this));
+        refreshLayout.setRefreshFooter(new MyRefreshLayoutFooter(this));
         refreshLayout.setOnRefreshListener(new RefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

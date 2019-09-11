@@ -10,9 +10,8 @@
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:footerLoadMoreingText="加载中..."
-        app:footerPullText="上拉加载更多"
-        app:headerAnimDrawbleList="@drawable/sun_refreshing">
+        app:headerHeight="150px"
+        >
 
         <ListView
             android:id="@+id/listView"

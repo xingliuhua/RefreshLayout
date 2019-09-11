@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <animation-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/loading_animator_0" android:duration="150"/>
-    <item android:drawable="@drawable/loading_animator_1" android:duration="150"/>
-    <item android:drawable="@drawable/loading_animator_2" android:duration="150"/>
+    <item android:drawable="@drawable/frame_1" android:duration="100"/>
+    <item android:drawable="@drawable/frame_6" android:duration="100"/>
+    <item android:drawable="@drawable/frame_11" android:duration="100"/>
+    <item android:drawable="@drawable/frame_16" android:duration="100"/>
+    <item android:drawable="@drawable/frame_21" android:duration="100"/>
+    <item android:drawable="@drawable/frame_26" android:duration="100"/>
+    <item android:drawable="@drawable/frame_31" android:duration="100"/>
+    <item android:drawable="@drawable/frame_36" android:duration="100"/>
+    <item android:drawable="@drawable/frame_41" android:duration="100"/>
+    <item android:drawable="@drawable/frame_46" android:duration="100"/>
 </animation-list>

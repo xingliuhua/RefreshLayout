@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,21 +22,18 @@ import android.widget.FrameLayout;
  */
 public class RefreshLayout extends FrameLayout {
     private View mChildView;
-    private RefreshLayoutHeader mMyRefreshLayoutHeader;
-    private RefreshLayoutFooter mMyRefreshLayoutFooter;
+    private AbsRefreshHeder mRefreshHeder;
+    private AbsRefreshFooter mRefreshFooter;
     private boolean isRefreshing;
     private float mTouchY;
     private float mCurrentY;
     private float mDamp;
     private final int RELEASE_MAX_HEIGHT = 150;
-    private final int HEADER_HEIGHT = 100;
-    private final int FOOTER_HEIGHT = 100;
+    private int HEADER_HEIGHT = 100;
+    private int FOOTER_HEIGHT = 100;
     private boolean needLoadMore = true;
     private boolean isLoadMoreing;
     private final int ANIM_DURATION = 300;
-    private int mHeaderImageAnimListResId;
-    private String mFooterPullText;
-    private String mFooterLoadmoreingText;
 
     public RefreshLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -47,39 +45,68 @@ public class RefreshLayout extends FrameLayout {
             return;
         }
 
-        if (getChildCount() > 1) {
-            throw new RuntimeException("can only have one child widget");
-        }
         mDamp = (RELEASE_MAX_HEIGHT * RELEASE_MAX_HEIGHT) / 600f;
         TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.RefreshLayout);
-        mHeaderImageAnimListResId = typedArray.getResourceId(R.styleable.RefreshLayout_headerAnimDrawbleList, -1);
-        mFooterPullText = typedArray.getString(R.styleable.RefreshLayout_footerPullText);
-        mFooterLoadmoreingText = typedArray.getString(R.styleable.RefreshLayout_footerLoadMoreingText);
+        HEADER_HEIGHT = (int) typedArray.getDimension(R.styleable.RefreshLayout_headerHeight, 100);
+        Log.e("xx", "height:" + HEADER_HEIGHT);
+        FOOTER_HEIGHT = (int) typedArray.getDimension(R.styleable.RefreshLayout_footerHeight, 100);
         typedArray.recycle();
+
+
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-
+        Log.e("xx", "onAttachedToWindow");
         Context context = getContext();
-
-        mChildView = getChildAt(0);
+        mChildView = getChildAt(getChildCount() - 1);
 
         if (mChildView == null) {
             return;
         }
-        mMyRefreshLayoutHeader = new RefreshLayoutHeader(context, mHeaderImageAnimListResId);
+        if (mRefreshHeder == null) {
+            mRefreshHeder = new SimpleRefreshLayoutHeader(context);
+            LayoutParams headerLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            headerLayoutParams.gravity = Gravity.TOP;
+            mRefreshHeder.setVisibility(View.GONE);
+
+            addView(mRefreshHeder, 0, headerLayoutParams);
+        }
+        if (mRefreshFooter == null) {
+            mRefreshFooter = new SimpleRefreshLayoutFooter(context);
+            LayoutParams footerLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            footerLayoutParams.gravity = Gravity.BOTTOM;
+            mRefreshFooter.setVisibility(View.GONE);
+            addView(mRefreshFooter, 0, footerLayoutParams);
+        }
+    }
+
+    public AbsRefreshHeder getRefreshHeder() {
+        return mRefreshHeder;
+    }
+
+    public void setRefreshHeder(AbsRefreshHeder refreshLayoutHeader) {
+        removeView(mRefreshHeder);
+        mRefreshFooter = null;
+        mRefreshHeder = refreshLayoutHeader;
         LayoutParams headerLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         headerLayoutParams.gravity = Gravity.TOP;
-        mMyRefreshLayoutHeader.setVisibility(View.GONE);
-        addView(mMyRefreshLayoutHeader, 0, headerLayoutParams);
+        mRefreshHeder.setVisibility(View.GONE);
+        addView(mRefreshHeder, 0, headerLayoutParams);
+    }
 
-        mMyRefreshLayoutFooter = new RefreshLayoutFooter(context, mFooterPullText, mFooterLoadmoreingText);
+    public AbsRefreshFooter getRefreshFooter() {
+        return mRefreshFooter;
+    }
+
+    public void setRefreshFooter(AbsRefreshFooter refreshFooter) {
+        removeView(mRefreshFooter);
+        mRefreshFooter = refreshFooter;
         LayoutParams footerLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         footerLayoutParams.gravity = Gravity.BOTTOM;
-        mMyRefreshLayoutFooter.setVisibility(View.GONE);
-        addView(mMyRefreshLayoutFooter, 0, footerLayoutParams);
+        mRefreshFooter.setVisibility(View.GONE);
+        addView(mRefreshFooter, 0, footerLayoutParams);
     }
 
     @Override
@@ -123,19 +150,22 @@ public class RefreshLayout extends FrameLayout {
                 float distance = mCurrentY - mTouchY;
                 // 阻尼效果
                 double dy = Math.sqrt(mDamp * Math.abs(distance));
-//                LogUtil.e("distance:"+distance);
+                Log.e("x", "distance:" + distance);
                 if (mChildView != null) {
                     if (distance > 0 && !canChildScrollUp()) {
-                        mMyRefreshLayoutHeader.onPull((float) dy);
+                        Log.e("x", "call onpull:" + dy);
+                        mRefreshHeder.onPull((float) dy);
                         ViewCompat.setTranslationY(mChildView, (float) dy);
+                        Log.e("x", "yidiong child:" + (float) dy);
                     } else if (distance < 0 && !canChildScrollUp()) {
-                        mMyRefreshLayoutHeader.onPull(0);
+                        Log.e("x", "call onpull:");
+                        mRefreshHeder.onPull(0);
                         ViewCompat.setTranslationY(mChildView, 0);
                     } else if (distance < 0 && !canChildScrollDown() && needLoadMore) {
-                        mMyRefreshLayoutFooter.onPull(-(float) dy);
+                        mRefreshFooter.onPull(-(float) dy);
                         ViewCompat.setTranslationY(mChildView, -(float) dy);
                     } else if (distance > 0 && !canChildScrollDown() && needLoadMore) {
-                        mMyRefreshLayoutFooter.onPull(0);
+                        mRefreshFooter.onPull(0);
                         ViewCompat.setTranslationY(mChildView, 0);
                     }
                 }
@@ -147,26 +177,26 @@ public class RefreshLayout extends FrameLayout {
                     //下拉
                     if (ViewCompat.getY(mChildView) > 0) {
                         if (ViewCompat.getY(mChildView) >= HEADER_HEIGHT) {
-                            createAnimatorTranslationY(mChildView, HEADER_HEIGHT, mMyRefreshLayoutHeader);
+                            createAnimatorTranslationY(mChildView, HEADER_HEIGHT, mRefreshHeder);
                             isRefreshing = true;
                             if (mOnRefreshListener != null) {
                                 mOnRefreshListener.onRefresh();
-                                mMyRefreshLayoutHeader.onStartRefreshing();
+                                mRefreshHeder.onStartRefreshing();
                             }
                         } else {
-                            createAnimatorTranslationY(mChildView, 0, mMyRefreshLayoutHeader);
+                            createAnimatorTranslationY(mChildView, 0, mRefreshHeder);
                         }
                     } else {
                         //上拉
                         if (Math.abs(ViewCompat.getY(mChildView)) >= FOOTER_HEIGHT) {
-                            createAnimatorTranslationY(mChildView, -FOOTER_HEIGHT, mMyRefreshLayoutFooter);
+                            createAnimatorTranslationY(mChildView, -FOOTER_HEIGHT, mRefreshFooter);
                             isLoadMoreing = true;
                             if (mOnRefreshListener != null) {
                                 mOnRefreshListener.onLoadmore();
-                                mMyRefreshLayoutFooter.onStartLoadMore();
+                                mRefreshFooter.onStartLoadMore();
                             }
                         } else {
-                            createAnimatorTranslationY(mChildView, 0, mMyRefreshLayoutFooter);
+                            createAnimatorTranslationY(mChildView, 0, mRefreshFooter);
                         }
                     }
                 }
@@ -219,7 +249,7 @@ public class RefreshLayout extends FrameLayout {
                 protected void applyTransformation(float interpolatedTime, Transformation t) {
                     float dy = (1 - interpolatedTime) * HEADER_HEIGHT;
                     mChildView.setTranslationY(dy);
-                    mMyRefreshLayoutHeader.onPull(dy);
+                    mRefreshHeder.onPull(dy);
                 }
             };
             animation.setAnimationListener(new Animation.AnimationListener() {
@@ -230,7 +260,7 @@ public class RefreshLayout extends FrameLayout {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    mMyRefreshLayoutHeader.onFinishRefreshing();
+                    mRefreshHeder.onFinishRefreshing();
                 }
 
                 @Override
@@ -248,13 +278,13 @@ public class RefreshLayout extends FrameLayout {
 
     private void finishLoadMoreing() {
         if (mChildView != null) {
-            mMyRefreshLayoutFooter.onFinishLoadMore();
+            mRefreshFooter.onFinishLoadMore();
             Animation animation = new Animation() {
                 @Override
                 protected void applyTransformation(float interpolatedTime, Transformation t) {
                     float dy = (1 - interpolatedTime) * FOOTER_HEIGHT;
                     mChildView.setTranslationY(-dy);
-                    mMyRefreshLayoutFooter.onPull(-dy);
+                    mRefreshFooter.onPull(-dy);
                 }
             };
             animation.setAnimationListener(new Animation.AnimationListener() {
@@ -265,7 +295,7 @@ public class RefreshLayout extends FrameLayout {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    mMyRefreshLayoutFooter.onFinishLoadMore();
+                    mRefreshFooter.onFinishLoadMore();
                 }
 
                 @Override
@@ -289,7 +319,7 @@ public class RefreshLayout extends FrameLayout {
                 protected void applyTransformation(float interpolatedTime, Transformation t) {
                     float dy = interpolatedTime * HEADER_HEIGHT;
                     mChildView.setTranslationY(dy);
-                    mMyRefreshLayoutHeader.onPull(dy);
+                    mRefreshHeder.onPull(dy);
                 }
             };
             animation.setInterpolator(new AccelerateInterpolator());
@@ -302,7 +332,7 @@ public class RefreshLayout extends FrameLayout {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    mMyRefreshLayoutHeader.onStartRefreshing();
+                    mRefreshHeder.onStartRefreshing();
                 }
 
                 @Override
@@ -327,7 +357,7 @@ public class RefreshLayout extends FrameLayout {
                 protected void applyTransformation(float interpolatedTime, Transformation t) {
                     float dy = interpolatedTime * FOOTER_HEIGHT;
                     mChildView.setTranslationY(-dy);
-                    mMyRefreshLayoutFooter.onPull(dy);
+                    mRefreshFooter.onPull(dy);
                 }
             };
             animation.setInterpolator(new AccelerateInterpolator());
@@ -340,7 +370,7 @@ public class RefreshLayout extends FrameLayout {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    mMyRefreshLayoutFooter.onStartLoadMore();
+                    mRefreshFooter.onStartLoadMore();
                 }
 
                 @Override
@@ -369,7 +399,7 @@ public class RefreshLayout extends FrameLayout {
                     startLoadMoreing();
                 }
             });
-        } else{
+        } else {
             this.post(new Runnable() {
                 @Override
                 public void run() {

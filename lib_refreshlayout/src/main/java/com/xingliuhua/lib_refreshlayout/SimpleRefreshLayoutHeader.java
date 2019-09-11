@@ -2,29 +2,30 @@ package com.xingliuhua.lib_refreshlayout;
 
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 /**
  * Created by xingliuhua on 2016/7/6 0006.
  */
-public class RefreshLayoutHeader extends FrameLayout implements IRefreshHeder {
+public class SimpleRefreshLayoutHeader extends AbsRefreshHeder {
 
     private AnimationDrawable mAnimationDrawable;
-    private float mIvHeight = 100f;
+    private float mIvHeight=100f;
 
 
-    public RefreshLayoutHeader(Context context, int imageResId) {
+    public SimpleRefreshLayoutHeader(Context context) {
         super(context);
-        init(imageResId);
+        init(R.drawable.refreshing);
     }
 
     private ImageView mIv;
 
     private void init(int imageResId) {
+
         mIv = new ImageView(getContext());
         if (imageResId == -1) {
             mIv.setImageResource(R.drawable.refreshing);
@@ -46,6 +47,7 @@ public class RefreshLayoutHeader extends FrameLayout implements IRefreshHeder {
     }
 
     public void onPull(float dy) {
+        Log.e("xx", "onpull");
         setVisibility(View.VISIBLE);
         if (dy < mIvHeight) {
             mIv.getLayoutParams().height = (int) dy;
