@@ -2,8 +2,8 @@
 This one pull to refresh library, support for load more, it can contain a LinearLayout or ListView and other layout.
 you can custom heder or footer.
 ## Screenshot
-![](https://github.com/xingliuhua/RefreshLayout/blob/master/demo.gif)
-<img src="https://github.com/xingliuhua/RefreshLayout/blob/master/demo.gif" width="200" align=center />
+
+<img src="https://github.com/xingliuhua/RefreshLayout/blob/master/demo.gif" width="300" align=center />
 ## Getting Started
 
 ### Add the library as dependency
