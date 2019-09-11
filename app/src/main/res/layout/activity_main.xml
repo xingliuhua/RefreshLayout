@@ -29,12 +29,4 @@
         android:layout_height="wrap_content"
         android:text="contain a ListView custom header"
         android:textAllCaps="false" />
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animation_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        app:lottie_fileName="header2.json"
-        app:lottie_loop="true" />
 </LinearLayout>

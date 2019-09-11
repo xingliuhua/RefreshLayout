@@ -32,7 +32,5 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, RefreshListViewCustomHeaderActivity.class));
             }
         });
-     LottieAnimationView lottieAnimationView= findViewById(R.id.animation_view);
-     lottieAnimationView.setProgress(0.4f);
     }
 }
